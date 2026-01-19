@@ -11,7 +11,7 @@ export default function Home() {
 
   useEffect(() => {
     // Connect to websocket server
-    const websocket = new WebSocket(process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8080');
+    const websocket = new WebSocket(process.env.NEXT_PUBLIC_WS_URL || 'wss://next-js-chess.onrender.com'); 
     wsRef.current = websocket;
     setWs(websocket);
 
