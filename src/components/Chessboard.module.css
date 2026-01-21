@@ -71,8 +71,10 @@
 
 .darkPlayer {
  color: black;
+ 
 }
 
 .lightPlayer {
  color: white;
+ filter: drop-shadow(0 0 3px black);
 }

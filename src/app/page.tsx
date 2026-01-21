@@ -3,15 +3,21 @@ import { useState, useRef, useEffect } from "react";
 import { Chessboard } from "../components/Chessboard";
 import { Chat } from "../components/Chat";
 import { ControlPanel } from "../components/ControlPanel";
+import { ChessPiece } from "../utils/board";
 
 export default function Home() {
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [assignedPlayer, setAssignedPlayer] = useState<'white' | 'black' | 'spectator' | null>(null);
+  const [capturedPieces, setCapturedPieces] = useState<{
+    white: ChessPiece[],
+    black: ChessPiece[]
+  }>({ white: [], black: [] });
   const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
     // Connect to websocket server
-    const websocket = new WebSocket(process.env.NEXT_PUBLIC_WS_URL || 'wss://next-js-chess.onrender.com'); 
+    const websocket = new WebSocket('ws://localhost:8080'); 
+    //process.env.NEXT_PUBLIC_WS_URL || 'wss://next-js-chess.onrender.com' ||
     wsRef.current = websocket;
     setWs(websocket);
 
@@ -50,15 +56,16 @@ export default function Home() {
 
   const handleReset = () => {
     sendMessage({ type: 'reset' });
+    setCapturedPieces({ white: [], black: [] });
   };
 
   return (
     <div style={{ display: 'flex', height: '100vh' }}>
-      <div style={{ width: '200px', borderRight: '1px solid #ccc' }}>
-        <ControlPanel onReset={handleReset} />
+      <div style={{ width: '250px', borderRight: '1px solid #ccc' }}>
+        <ControlPanel onReset={handleReset} capturedPieces={capturedPieces} />
       </div>
       <div style={{ flex: 1 }}>
-        <Chessboard ws={ws} />
+        <Chessboard ws={ws} capturedPieces={capturedPieces} setCapturedPieces={setCapturedPieces} />
       </div>
       <div style={{ width: '300px', borderLeft: '1px solid #ccc' }}>
         <Chat ws={ws} assignedPlayer={assignedPlayer} />
